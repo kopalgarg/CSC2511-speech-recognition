@@ -1,0 +1,30 @@
+
+I used the Voice Memo app on my Macbook to collect three recordings of me saying the following sentences. The files were in .mp4 
+format, and had to be converted to .wav using an online conversion tool. 
+
+"How to wreck a nice beach"
+--> HOW TO WRECK THE NICE SPEECH
+"How to recognize speech"
+--> HOW TO RECOGNIZE SPEECH
+"Potatoes"
+--> POTATOES
+
+I used speechbrain (script below for reference) to transribe my recordings. I decided to use "how to wreck a nice beach" and 
+"how to recognize speech" as it is an example that has been used quite a lot in class, and I was curious to see how a state-of-the-alternative
+ASR system would be able to transcribe such similar sounding sentences. As seen above, the transcripts were mostly right, with the 
+exception of "a" being transcribed to "the", which could have been a problem with the audio, or the way I pronounced it. 
+
+
+Python Script:
+import speechbrain as sb
+from speechbrain.dataio.dataio import read_audio
+from IPython.display import Audio
+
+
+from speechbrain.pretrained import EncoderDecoderASR
+
+asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-rnnlm-librispeech", savedir="pretrained_models/asr-crdnn-rnnlm-librispeech")
+asr_model.transcribe_file('speechbrain/asr-crdnn-rnnlm-librispeech/example.wav')
+
+recording = 'beach.wav'
+asr_model.transcribe_file(recording)
