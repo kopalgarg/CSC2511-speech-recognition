@@ -1,0 +1,81 @@
+
+---- Experiment 1 ----
+Testing the max. # speakers with M and maxIter set to 8 and 20, respectively.
+maxSpeaker_list = [32, 24, 16, 8, 4]
+M: 8     maxIter: 20     S: 32   Accuracy: 0.96875
+M: 8     maxIter: 20     S: 24   Accuracy: 1.0
+M: 8     maxIter: 20     S: 16   Accuracy: 0.9375
+M: 8     maxIter: 20     S: 8    Accuracy: 1.0
+M: 8     maxIter: 20     S: 4    Accuracy: 1.0
+
+I would expect for a decrease in the number of speakers to cause an increase in the classification accuracy, as there
+would be less speakers to choose from, making the correct classification more likely. The overall trend observed in this experiment
+suggests the same, with the exception of a decrease in classification accuracy when going from 24 speakers to 16 speakers. 
+
+---- Experiment 2 ----
+Testing the number of components (M) with max. # speakers and maxIter set to 32 and 20, respectively.
+M_list = [8, 7, 6, 5, 4, 3, 2, 1]
+M: 8 	 maxIter: 20 	 S: 32 	 Accuracy: 1.0
+M: 7 	 maxIter: 20 	 S: 32 	 Accuracy: 1.0
+M: 6 	 maxIter: 20 	 S: 32 	 Accuracy: 1.0
+M: 5 	 maxIter: 20 	 S: 32 	 Accuracy: 1.0
+M: 4 	 maxIter: 20 	 S: 32 	 Accuracy: 1.0
+M: 3 	 maxIter: 20 	 S: 32 	 Accuracy: 1.0
+M: 2 	 maxIter: 20 	 S: 32 	 Accuracy: 0.9375
+M: 1 	 maxIter: 20 	 S: 32 	 Accuracy: 0.9375
+
+For the decresaing M experiment, we observe that the model's classification accuracy falls down from 100% to 94% 
+when the number of components drops below 3. This implies that as we increase the number of components the classification
+accuracy increases, but tends to stabilize beyond a certain point. This might be because with less number of components there 
+are less learnable parameters, so the model doesn't fit too well to the training data.
+
+
+---- Experiment 3 ----
+Testing maxIter with max. # speakers and M set to 32 and 8, respectively.
+maxIter_list = [20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 0]
+M: 8 	 maxIter: 20 	 S: 32 	 Accuracy: 1.0
+M: 8 	 maxIter: 18 	 S: 32 	 Accuracy: 0.96875
+M: 8 	 maxIter: 16 	 S: 32 	 Accuracy: 1.0
+M: 8 	 maxIter: 14 	 S: 32 	 Accuracy: 1.0
+M: 8 	 maxIter: 12 	 S: 32 	 Accuracy: 1.0
+M: 8 	 maxIter: 10 	 S: 32 	 Accuracy: 1.0
+M: 8 	 maxIter: 8 	 S: 32 	 Accuracy: 1.0
+M: 8 	 maxIter: 6 	 S: 32 	 Accuracy: 1.0
+M: 8 	 maxIter: 4 	 S: 32 	 Accuracy: 1.0
+M: 8 	 maxIter: 2 	 S: 32 	 Accuracy: 0.96875
+M: 8 	 maxIter: 0 	 S: 32 	 Accuracy: 1.0
+
+For the decreasing maxIter experiment, the classification accuracy first decreases from 100% to 96.8%, increases
+and remains constant at 100%, again decreases to 96.8% and then increases back again to 100%. In general, when a 
+model overfits to the intricacies of a training set, we see a decreased generalization accuracy on an unseen test set. 
+Presumably, decresing maxIter would lead to an underfit, potentially undertrained model with a low classification accuracy as 
+with less iterations, the model is learning less about the data. In this experiment the trends suggest that the model with maxIter of 0 is already good enough to give a 100% accuracy. 
+However, we see that with a maxIter of 2, the accuracy dips to 97%.
+
+
+Discussion questions:
+Q1. How might you improve the classification accuracy of the Gaussian mixtures, without adding more
+training data?
+
+A couple of ways of increasing the classification accuracy based on above experiments:
+- increase the number of components to an optimal number so that the model can represent the complexities of the training set better without overfitting.
+- increase max iterations so the model converges to the optimal value
+- decrease the max. number of speakers to a reasonable size that can be well represented by the number of components being 
+used in the model.
+- A grid-search style approach to fine-tune the hyperparameters and to experiment with differnt variable initilizations would help 
+us come up with an optimal hyperparameter set, which should give us an indication of what the best possible model accuracy is.
+
+Q2. When would your classifier decide that a given test utterance comes from none of the trained speaker
+models, and how would your classifier come to this decision?
+
+Ideally when the likelihoods from the classifier are low, or approaching 0 (or log likelihoods approaching -inf), then it might be safe to decide that 
+none of the trained speakers uttered the test data. However, since we're using the argmax function, the speaker with the highest likelihood will be assigned.
+To circumvent this issue, we can set a minimum threshold for what's considered a confident decision or assignemnt.
+Another way to overcome this could be to look into distribution shift, i.e. does the test data come from a distribution that is not 
+represented in the training data. That might be a straightforward way of saying the test data isn't uttered by any of the trained speakers.
+
+Q3. Can you think of some alternative methods for doing speaker identification that don’t use Gaussian
+mixtures?
+
+Unsupervised clustering approaches like k-means clustering could be used for identifying k clusters for k speakers, the drawback again being that we'd have to 
+pre-define k. Recurrent neural network-based architectures could also be used, with softmax activation that would assign the most likely speaker.
