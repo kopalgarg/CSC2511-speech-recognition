@@ -100,7 +100,7 @@ if __name__ == "__main__":
             trainThetas.append( train(speaker, X, M, epsilon, maxIter) )
 
     # evaluate 
-    numCorrect = 0;
+    numCorrect = 0
     for i in range(0,len(testMFCCs)):
         numCorrect += test( testMFCCs[i], i, trainThetas, k ) 
     accuracy = 1.0*numCorrect/len(testMFCCs)
